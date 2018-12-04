@@ -9,6 +9,13 @@ const ProductFullWrapper = styled.div`
   padding: 20px;
 `;
 
+const Button = styled.div`
+  padding: 8px;
+  border: 1px dotted red;
+  margin: 10px 0;
+  display: inline-block;
+`;
+
 class ProductFull extends Component {
   constructor() {
     super();
@@ -18,15 +25,28 @@ class ProductFull extends Component {
   async componentDidMount() {
     const data = await product;
     this.setState({ product: data });
+
+    // Update the product id value to test the mutation observer
+    let i = 0;
+    setInterval(() => {
+        this.setState({ product: {
+            ...data,
+            product_id: data.product_id + '-' + i++
+        }});
+    }, 4000);
   }
 
   render() {
     const { product } = this.state;
-    console.log(product);
+    const { product_id } = product;
 
     return (
       <ProductFullWrapper className="product-full">
-        {product.name}
+        <h3>{product.name}: {product_id}</h3>
+
+        <Button
+          data-pg
+          data-product-id={product_id} />
       </ProductFullWrapper>
     );
   }

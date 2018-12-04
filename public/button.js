@@ -27,10 +27,10 @@ window.customElements.define('pg-add-to-bag', PGAddToBag);
             observer = new MutationObserver(check).observe(
                 doc.documentElement,
                 {
-                    attributeFilter: ['data-pg'],
+                    attributeFilter: ['data-product-id'],
                     attributes: true,
                     childList: true,
-                    subtree: true
+                    subtree: false
                 }
             );
         }
@@ -38,21 +38,22 @@ window.customElements.define('pg-add-to-bag', PGAddToBag);
     };
         
     const check = () => {
-        let listener, elements;
         for (let i = 0, len = listeners.length; i < len; i++) {
-            let element;
-            listener = listeners[i];
-            elements = doc.querySelectorAll(listener.selector);
+            let listener = listeners[i];
+            let elements = doc.querySelectorAll(listener.selector);
+
+console.log(listener);
+console.log(listener.selector);
+console.log(elements);
 
             for (let j = 0, jLen = elements.length; j < jLen; j++) {
-                element = elements[j];
+                let element = elements[j];
                 // Make sure the callback isn't invoked with the 
                 // same element more than once
-                if (!element.ready) {
+                // if (!element.ready) {
                     element.ready = true;
-// console.log(element);
                     listener.fn.call(element, element);
-                }
+                // }
             }
         }
     };
@@ -63,7 +64,9 @@ window.customElements.define('pg-add-to-bag', PGAddToBag);
 
 (function(win) {
 
-win.ready('[data-pg]', function(element) {
+// console.log(doc.querySelectorAll(listener.selector);
+
+win.ready('.pg-add-to-bag', function(element) {
   console.log(element);
   // element.innerHTML('test');
 });

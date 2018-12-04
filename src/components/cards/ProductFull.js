@@ -45,6 +45,7 @@ class ProductFull extends Component {
         <h3>{product.name}: {product_id}</h3>
 
         <Button
+          className="pg-add-to-bag"
           data-pg
           data-product-id={product_id} />
       </ProductFullWrapper>

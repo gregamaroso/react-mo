@@ -19,7 +19,11 @@ const Button = styled.div`
 class ProductFull extends Component {
   constructor() {
     super();
-    this.state = { product: {} };
+    this.state = {
+      product: {
+        skus: []
+      }
+    };
   }
 
   async componentDidMount() {
@@ -29,17 +33,17 @@ class ProductFull extends Component {
     // Update the product id value to test the mutation observer
     let i = 0;
     setInterval(() => {
-        this.setState({ product: {
-            ...data,
-            product_id: data.product_id + '-' + i++
-        }});
+      this.setState({ product: {
+        ...data,
+        product_id: data.product_id + '-' + i++
+      }});
     }, 4000);
   }
 
   render() {
     const { product } = this.state;
     const { product_id } = product;
-
+   
     return (
       <ProductFullWrapper className="product-full">
         <h3>{product.name}: {product_id}</h3>
@@ -47,7 +51,7 @@ class ProductFull extends Component {
         <Button
           className="pg-add-to-bag"
           data-pg
-          data-product-id={product_id} />
+          data-sku-id={product_id} />
       </ProductFullWrapper>
     );
   }

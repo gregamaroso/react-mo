@@ -13,38 +13,15 @@ window.customElements.define('pg-add-to-bag', PGAddToBag);
 (function(win) {
     'use strict';
     
-    let listeners = [];
     let observer;
+    let listeners = [];
     const doc = win.document;
     const MutationObserver = win.MutationObserver || win.WebKitMutationObserver;
-
-    const ready = (selector, fn) => {
-        listeners.push({
-            selector: selector,
-            fn: fn
-        });
-        if (!observer) {
-            observer = new MutationObserver(check).observe(
-                doc.documentElement,
-                {
-                    attributeFilter: ['data-product-id'],
-                    attributes: true,
-                    childList: true,
-                    subtree: false
-                }
-            );
-        }
-        check();
-    };
         
     const check = () => {
         for (let i = 0, len = listeners.length; i < len; i++) {
             let listener = listeners[i];
             let elements = doc.querySelectorAll(listener.selector);
-
-console.log(listener);
-console.log(listener.selector);
-console.log(elements);
 
             for (let j = 0, jLen = elements.length; j < jLen; j++) {
                 let element = elements[j];
@@ -58,15 +35,37 @@ console.log(elements);
         }
     };
 
+    const ready = (selector, fn) => {
+        listeners.push({
+            selector: selector,
+            fn: fn
+        });
+
+        if (!observer) {
+            observer = new MutationObserver((mutations) => {
+                console.log('wtf');
+                console.log(mutations);
+            }).observe(
+                doc.documentElement,
+                {
+                    attributeFilter: ['data-product-id'],
+                    attributes: true,
+                    childList: true,
+                    subtree: false
+                }
+            );
+        }
+        // check();
+    };
+ 
     win.ready = ready;
 })(this);
 
 
 (function(win) {
 
-// console.log(doc.querySelectorAll(listener.selector);
 
-win.ready('.pg-add-to-bag', function(element) {
+win.ready('.pg-add-to-bag', (element) => {
   console.log(element);
   // element.innerHTML('test');
 });

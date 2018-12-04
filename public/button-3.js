@@ -1,19 +1,25 @@
+(function() {
 
-var mutationObserver = new MutationObserver((mutations) => {
+const obs = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
-    if (mutation.type == 'attributes') {
+    if (mutation.type === 'attributes') {
       console.log(mutation);
     }
   });
 });
 
-mutationObserver.observe(document.documentElement, {
-  attributes: true,
-  characterData: true,
-  childList: true,
-  subtree: true,
-  attributeOldValue: true,
-  characterDataOldValue: true
-});
+obs.observe(
+  // document.getElementsByClassName(".pg-add-to-bag")[0],
+  document.body,
+  {
+    attributeFilter: ["data-sku-id"],
+    attributes: true,
+    characterData: false,
+    childList: false,  // must be false
+    subtree: true,
+    attributeOldValue: false,
+    characterDataOldValue: false,
+  }
+);
 
-
+})();

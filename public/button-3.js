@@ -1,15 +1,21 @@
+// Custom component/element defined globally
 class PGAddToBag extends HTMLButtonElement {
-  static get observedAttributes() { return ["disabled"]; }
+  static get observedAttributes() {
+    return ["disabled"];
+  }
+
+  handleClick() {
+    const skuId = this.getAttribute('data-sku-id');
+    console.log(`adding ${skuId} to your cart`);
+  }
 
   constructor() {
     super();
-    this._skuId = null;
-
-    this.addEventListener("click", () => {
-      alert('here');
-    });
+    this.addEventListener("click", this.handleClick);
   }
-  attributeChangedCallback() {
+
+  disconnectedCallback() {
+    this.removeEventListener('click', this.handleClick);
   }
 }
 window.customElements.define(
@@ -25,32 +31,52 @@ window.customElements.define(
 
 (function() {
 
-const obs = new MutationObserver((mutations) => {
+// Templates should be able to add listeners on the fly,
+// similar to site.onloadRPCRequests.push();
+let listeners = {
+  addToBag: function(ele) {
+    // Gather attributes needs to construct new button
+    const skuId = ele.dataset.skuId;
+    const quantity = 1;
+
+    // Instantiate new button
+    const button = document.createElement(
+      'button',
+      {
+        is: 'add-to-bag'
+      }
+    );
+    button.setAttribute('data-sku-id', skuId);
+    button.setAttribute('data-quantity', quantity);
+    button.textContent = "Buy " + skuId;
+
+    // Replace old button with new one
+    ele.innerHTML = '';
+    ele.appendChild(button);
+  }
+};
+
+
+// Global MutationObserver added to a drupal library
+new MutationObserver((mutations) => {
+  const _toCamelCase = (str) => {
+    return str.replace(/-([a-z])/g, (m, w) => w.toUpperCase());
+  };
+
   mutations.forEach((mutation) => {
     if (mutation.type === 'attributes') {
-      console.log(mutation);
-
       const ele = mutation.target;
-      const skuId = ele.dataset.skuId;
-      const button = document.createElement(
-        'button',
-        {
-          is: 'add-to-bag'
-        }
-      );
-      button.textContent = "Buy " + skuId;
+      const comp = _toCamelCase(ele.dataset.pgComponent);
 
-      ele.innerHTML = '';
-      ele.appendChild(button);
+      if (listeners.hasOwnProperty(comp) && typeof listeners[comp] === 'function') {
+        listeners[comp](ele);
+      }
     }
   });
-});
-
-obs.observe(
-  // document.getElementsByClassName(".pg-add-to-bag")[0],
+}).observe(
   document.body,
   {
-    attributeFilter: ["data-sku-id"],
+    attributeFilter: ["data-sku-id"],  // need to figure this part out
     attributes: true,
     characterData: false,
     childList: false,  // must be false

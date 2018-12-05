@@ -31,7 +31,7 @@ class ProductFull extends Component {
     this.setState({ product: data });
 
     // Update the product id value to test the mutation observer
-    let i = 0;
+    let i = 1;
     setInterval(() => {
       this.setState({ product: {
         ...data,
@@ -49,8 +49,7 @@ class ProductFull extends Component {
         <h3>{product.name}: {product_id}</h3>
 
         <Button
-          className="pg-add-to-bag"
-          data-pg
+          data-pg-component="add-to-bag"
           data-sku-id={product_id} />
       </ProductFullWrapper>
     );

@@ -1,18 +1,17 @@
 class PGAddToBag extends HTMLButtonElement {
+  static get observedAttributes() { return ["disabled"]; }
+
   constructor() {
     super();
     this._skuId = null;
 
-    // this.addEventListener("click", () => {
-    //  alert('here');
-    // });
+    this.addEventListener("click", () => {
+      alert('here');
+    });
   }
-  connectedCallback() {
-  }
-  disconnectedCallback() {
+  attributeChangedCallback() {
   }
 }
-
 window.customElements.define(
   'add-to-bag',
   PGAddToBag,
@@ -26,7 +25,6 @@ window.customElements.define(
 
 (function() {
 
-let i = 0;
 const obs = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     if (mutation.type === 'attributes') {
@@ -34,17 +32,18 @@ const obs = new MutationObserver((mutations) => {
 
       const ele = mutation.target;
       const skuId = ele.dataset.skuId;
-      const button = document.createElement('add-to-bag');
+      const button = document.createElement(
+        'button',
+        {
+          is: 'add-to-bag'
+        }
+      );
+      button.textContent = "Buy " + skuId;
 
       ele.innerHTML = '';
       ele.appendChild(button);
     }
   });
-
-  if (++i === 2) {
-    throw new Error("peace out");
-    return false;
-  }
 });
 
 obs.observe(

@@ -9,12 +9,31 @@ const ProductFullWrapper = styled.div`
   padding: 20px;
 `;
 
-const Button = styled.div`
-  padding: 8px;
-  border: 1px dotted red;
+const QuantityWrapper = styled.div`
+  margin 20px 0;
+`;
+
+const ButtonWrapper = styled.div`
+  cursor: pointer;
   margin: 10px 0;
   display: inline-block;
 `;
+
+class Quantity extends Component {
+  render() {
+    const handleQuantityChange = this.props.updateQuantity;
+
+    return (
+      <QuantityWrapper className="product-full__quantity">
+        <select name="quantity" onChange={handleQuantityChange}>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </QuantityWrapper>
+    );
+  }
+}
 
 class ProductFull extends Component {
   constructor() {
@@ -22,35 +41,55 @@ class ProductFull extends Component {
     this.state = {
       product: {
         skus: []
-      }
+      },
+      quantity: 1
     };
+  }
+
+  handleQuantityChange(e) {
+    this.setState({
+      quantity: e.target.value,
+    });
   }
 
   async componentDidMount() {
     const data = await product;
-    this.setState({ product: data });
+    this.setState({
+      product: data,
+      quantity: 1,
+    });
 
-    // Update the product id value to test the mutation observer
-    let i = 1;
-    setInterval(() => {
-      this.setState({ product: {
-        ...data,
-        product_id: data.product_id + '-' + i++
-      }});
-    }, 4000);
+    document.body.className += ' home';
   }
 
   render() {
-    const { product } = this.state;
+    const { product, quantity } = this.state;
     const { product_id } = product;
-   
+    const now = Date.now();
+
+    if (false || !product.hasOwnProperty('skus') || product.skus.length === 0) {
+      return (
+        <div />
+      );
+    }
+
+    console.log('product-full mounted');
+
     return (
       <ProductFullWrapper className="product-full">
-        <h3>{product.name}: {product_id}</h3>
+        <h3>{product.name}</h3>
 
-        <Button
+        <Quantity
+          updateQuantity={this.handleQuantityChange.bind(this)}
+        />
+
+        <ButtonWrapper
+          className="product-full__add-to-bag"
           data-pg-component="add-to-bag"
-          data-sku-id={product_id} />
+          data-pg-time={now}
+          data-quantity={quantity}
+          data-sku-id={product_id}
+        />
       </ProductFullWrapper>
     );
   }

@@ -1,7 +1,7 @@
 // Custom component/element defined globally
 class PGAddToBag extends HTMLButtonElement {
   static get observedAttributes() {
-    return ["disabled"];
+    return ['disabled'];
   }
 
   handleClick() {
@@ -11,7 +11,7 @@ class PGAddToBag extends HTMLButtonElement {
 
   constructor() {
     super();
-    this.addEventListener("click", this.handleClick);
+    this.addEventListener('click', this.handleClick);
   }
 
   disconnectedCallback() {
@@ -22,7 +22,7 @@ window.customElements.define(
   'add-to-bag',
   PGAddToBag,
   {
-    extends: "button"
+    extends: 'button'
   }
 );
 
